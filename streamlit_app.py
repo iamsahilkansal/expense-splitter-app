@@ -47,7 +47,7 @@ def settle(data):
     for i in range (n):
         for j in range(n):
             if(solver[i][j]!=0):
-                st.write(data[i]["name"]," should pay $", round(solver[i][j], 2), " to ", data[j]["name"], ".")
+                st.write(data[i]["name"]," should pay ₹", round(solver[i][j], 2), " to ", data[j]["name"], ".")
 
 st.title("Amount Splitter")
 
