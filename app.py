@@ -93,7 +93,7 @@ def settle(data):
 
 
 with st.sidebar:
-    st.title("Amount Splitter")
+    st.title("Expense Splitter")
     st.write("#")
     st.write("Enter the number of people ")
     n=st.number_input("",min_value=0, step=1)
