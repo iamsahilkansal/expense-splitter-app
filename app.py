@@ -95,7 +95,7 @@ def settle(data):
 with st.sidebar:
     st.title("Expense Splitter")
     st.write("#")
-    st.write("Enter the number of people ")
+    st.write("Enter the number of people (>1)")
     n=st.number_input("",min_value=0, step=1)
     st.markdown('😺 See Project Repository on [GitHub](https://github.com/iamsahilkansal/expense-splitter-app)')
     st.markdown('👨‍💻 Made by [**Sahil Kansal**](https://www.linkedin.com/in/iamsahilkansal/)')
