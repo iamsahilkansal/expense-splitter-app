@@ -3,19 +3,23 @@ import numpy as np
 import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
+from streamlit_option_menu import option_menu
 
 def viewNodes(solver, n, data):
     edges = []
     for i in range(n):
         for j in range(n):
-            if(solver[i][j]>0):
+            if(solver[i][j]>0.0):
                 edges.append((data[i]["name"], data[j]["name"]))
     
     G = nx.DiGraph()
     G.add_edges_from(edges)
     pos = nx.spring_layout(G)
     fig, ax = plt.subplots()
-    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=500, font_size=10, ax=ax)
+    num_nodes=len(G.nodes())
+    base_node_size = 100
+    node_size = max(base_node_size // num_nodes, 100)
+    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=node_size, font_size=8, ax=ax)
     st.pyplot(fig)
 
 
@@ -52,7 +56,7 @@ def settle(data):
                 solver[i][j]=0.0
     col1, col2=st.columns(2)
     with col1:
-        st.title("Traditional Method")
+        st.header("Traditional Method")
         viewNodes(solver, n, data)
     for i in range (n):
         for j in range (n):
@@ -64,35 +68,51 @@ def settle(data):
                 else:
                     solver[i][j]=0.00
     with col2:
-        st.title("Optimal Method")
+        st.header("Optimal Method")
         viewNodes(solver, n, data)
-    st.write("To Settle the Amount")
+    
+    st.subheader("To Settle the Amount: ")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.write(f"**Whom should pay?**")
+    with col2:
+        st.write(f"**To whom should pay?**")
+    with col3:
+        st.write(f"**Amount**")
+    
     for i in range (n):
         for j in range(n):
             if(solver[i][j]!=0):
-                st.write(data[i]["name"]," should pay ₹", round(solver[i][j], 2), " to ", data[j]["name"], ".")
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.text(data[i]['name'])
+                with col2:
+                    st.text(data[j]['name'])
+                with col3:
+                    st.text(round(solver[i][j], 2))
 
-st.title("Amount Splitter")
 
-col1, col2=st.columns(2)
-with col1:
-    st.write("##")
-    st.write("Enter the number of people")
-with col2:
+with st.sidebar:
+    st.title("Amount Splitter")
+    st.write("#")
+    st.write("Enter the number of people ")
     n=st.number_input("",min_value=0, step=1)
+    st.markdown('😺 See Project Repository on [GitHub](https://github.com/iamsahilkansal/expense-splitter-app)')
+    st.markdown('👨‍💻 Made by [**Sahil Kansal**](https://www.linkedin.com/in/iamsahilkansal/)')
+
 name = []
 amount=[]
 data=[]
 for i in range(n):
     col1, col2 = st.columns(2)
     with col1:
-        tempName = st.text_input(f"Enter the name {i+1}")
+        tempName = st.text_input(f"Enter the name for person {i+1}")
     with col2:
-        tempAmount =st.number_input(f"Enter the amount {i+1}",step=1.,format="%.2f")
+        tempAmount =st.number_input(f"Enter the amount for person {i+1}",step=1.,format="%.2f")
     data.append({"name":tempName, "amount":tempAmount})
-
-if(st.button("Settle Now") and n>0):
-    if(n==1):
-        st.write("No Need for settlement")
-    else:
-        settle(data)
+if(n>1):
+    if(st.button("Settle Now")):
+        if(n==1):
+            st.write("No Need for settlement")
+        else:
+            settle(data)
